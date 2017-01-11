@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum {
+    SJPathDrawTypeNone = 0,      ///< 不绘制
+    SJPathDrawTypeDraw = 1,      ///< 绘制
+}SJPathDrawType;
+
 @interface ViewController : UIViewController
 
 

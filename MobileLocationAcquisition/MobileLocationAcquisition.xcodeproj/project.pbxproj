@@ -31,6 +31,7 @@
 		5342D92E1E23BC2300B7DD90 /* libstdc++.6.0.9.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5342D92D1E23BC2300B7DD90 /* libstdc++.6.0.9.tbd */; };
 		5342D9311E23BD0000B7DD90 /* mapapi.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5342D9301E23BD0000B7DD90 /* mapapi.bundle */; };
 		53FA9F541E25E70D0009468D /* QYAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FA9F531E25E70D0009468D /* QYAnnotation.m */; };
+		53FA9F5A1E2623EE0009468D /* run.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 53FA9F591E2623EE0009468D /* run.gpx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +64,7 @@
 		5342D9301E23BD0000B7DD90 /* mapapi.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = mapapi.bundle; sourceTree = "<group>"; };
 		53FA9F521E25E70D0009468D /* QYAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAnnotation.h; sourceTree = "<group>"; };
 		53FA9F531E25E70D0009468D /* QYAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAnnotation.m; sourceTree = "<group>"; };
+		53FA9F591E2623EE0009468D /* run.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = run.gpx; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +97,7 @@
 		5342D8E91E23B25A00B7DD90 = {
 			isa = PBXGroup;
 			children = (
+				53FA9F591E2623EE0009468D /* run.gpx */,
 				5342D92F1E23BD0000B7DD90 /* Resources */,
 				5342D8F41E23B25A00B7DD90 /* MobileLocationAcquisition */,
 				5342D8F31E23B25A00B7DD90 /* Products */,
@@ -243,6 +246,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5342D9051E23B25A00B7DD90 /* LaunchScreen.storyboard in Resources */,
+				53FA9F5A1E2623EE0009468D /* run.gpx in Resources */,
 				5342D9311E23BD0000B7DD90 /* mapapi.bundle in Resources */,
 				5342D9021E23B25A00B7DD90 /* Assets.xcassets in Resources */,
 				5342D9001E23B25A00B7DD90 /* Main.storyboard in Resources */,
