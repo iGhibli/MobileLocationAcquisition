@@ -30,6 +30,7 @@
 		5342D92C1E23BC1900B7DD90 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5342D92B1E23BC1900B7DD90 /* CoreTelephony.framework */; };
 		5342D92E1E23BC2300B7DD90 /* libstdc++.6.0.9.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5342D92D1E23BC2300B7DD90 /* libstdc++.6.0.9.tbd */; };
 		5342D9311E23BD0000B7DD90 /* mapapi.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5342D9301E23BD0000B7DD90 /* mapapi.bundle */; };
+		53FA9F541E25E70D0009468D /* QYAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FA9F531E25E70D0009468D /* QYAnnotation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,8 @@
 		5342D92B1E23BC1900B7DD90 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		5342D92D1E23BC2300B7DD90 /* libstdc++.6.0.9.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.6.0.9.tbd"; path = "usr/lib/libstdc++.6.0.9.tbd"; sourceTree = SDKROOT; };
 		5342D9301E23BD0000B7DD90 /* mapapi.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = mapapi.bundle; sourceTree = "<group>"; };
+		53FA9F521E25E70D0009468D /* QYAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAnnotation.h; sourceTree = "<group>"; };
+		53FA9F531E25E70D0009468D /* QYAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAnnotation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +119,8 @@
 				5342D8FB1E23B25A00B7DD90 /* ViewController.h */,
 				5342D8FC1E23B25A00B7DD90 /* ViewController.m */,
 				5342D8FE1E23B25A00B7DD90 /* Main.storyboard */,
+				53FA9F521E25E70D0009468D /* QYAnnotation.h */,
+				53FA9F531E25E70D0009468D /* QYAnnotation.m */,
 				5342D9011E23B25A00B7DD90 /* Assets.xcassets */,
 				5342D9031E23B25A00B7DD90 /* LaunchScreen.storyboard */,
 				5342D9061E23B25A00B7DD90 /* Info.plist */,
@@ -253,6 +258,7 @@
 			files = (
 				5342D8FD1E23B25A00B7DD90 /* ViewController.m in Sources */,
 				5342D8FA1E23B25A00B7DD90 /* AppDelegate.m in Sources */,
+				53FA9F541E25E70D0009468D /* QYAnnotation.m in Sources */,
 				5342D8F71E23B25A00B7DD90 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -432,6 +438,7 @@
 				5342D90B1E23B25A00B7DD90 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

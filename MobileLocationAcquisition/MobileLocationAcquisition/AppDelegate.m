@@ -7,19 +7,30 @@
 //
 
 #import "AppDelegate.h"
+#import <BaiduMapAPI_Base/BMKBaseComponent.h>
 
-@interface AppDelegate ()
+@interface AppDelegate ()<BMKGeneralDelegate>
+
+@property (nonatomic, strong)BMKMapManager *manager;
 
 @end
 
 @implementation AppDelegate
 
+#pragma mark - BMK delegate
+-(void)onGetNetworkState:(int)iError{
+    NSLog(@"%d", iError);
+}
+
+-(void)onGetPermissionState:(int)iError{
+    NSLog(@"%d", iError);
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // 要使用百度地图，请先启动BaiduMapManager
-    _mapManager = [[BMKMapManager alloc]init];
+    self.manager = [[BMKMapManager alloc]init];
     // 如果要关注网络及授权验证事件，请设定     generalDelegate参数
-    BOOL ret = [_mapManager start:@"N1a5ii0oveXQc2OPCfiKeyzKKxP14cyy"  generalDelegate:nil];
+    BOOL ret = [self.manager start:@"N1a5ii0oveXQc2OPCfiKeyzKKxP14cyy"  generalDelegate:self];
     if (!ret) {
         NSLog(@"manager start failed!");
     }
