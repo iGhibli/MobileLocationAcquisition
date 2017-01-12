@@ -18,6 +18,7 @@
 @property (nonatomic, strong) NSMutableArray *allLocations;
 @property (nonatomic, strong) QYAnnotation *nowAnnotation;
 @property (nonatomic, assign) SJPathDrawType nowPathDrawType;
+@property (nonatomic, assign) SJCoordinateSpanType nowCoordinateSpanType;
 
 @end
 
@@ -28,10 +29,12 @@
     
     self.allLocations = [NSMutableArray array];
     self.nowPathDrawType = SJPathDrawTypeNone;
+    self.nowCoordinateSpanType = SJCoordinateSpanTypeAuto;
     
     _locationService = [[BMKLocationService alloc] init];
     _locationService.distanceFilter = 15.f;
-    _locationService.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+    _locationService.desiredAccuracy = kCLLocationAccuracyBest;
+    _locationService.allowsBackgroundLocationUpdates = YES;
     _locationService.delegate = self;
     //    self.mapView.mapType = BMKMapTypeStandard;// 设置地图为空白类型
     //    // 打开实时路况图层
@@ -59,6 +62,7 @@
     anno.annotationType = SJAnnotationTypeStart;
     anno.title = @"开始";
     [self.mapView addAnnotation:anno];
+    [self.allLocations addObject:location];
 }
 
 - (IBAction)pauseAction:(UIButton *)sender {
@@ -81,8 +85,21 @@
     [self.mapView addAnnotation:anno];
 }
 
+- (IBAction)spanSetAction:(UIButton *)sender {
+    if (self.nowCoordinateSpanType == SJCoordinateSpanTypeCustom) {
+        self.nowCoordinateSpanType = SJCoordinateSpanTypeAuto;
+    }
+}
+
 - (IBAction)redisplay:(UIButton *)sender {
     
+}
+
+#pragma mark - BMKMapViewDelegate
+- (void)mapStatusDidChanged:(BMKMapView *)mapView {
+    if (mapView.region.span.latitudeDelta != 0.05 && self.nowCoordinateSpanType == SJCoordinateSpanTypeAuto) {
+//        self.nowCoordinateSpanType = SJCoordinateSpanTypeCustom;
+    }
 }
 
 
@@ -90,13 +107,15 @@
 -(void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation{
     CLLocation *location = userLocation.location;
     // 设置地图的显示区域
-    BMKCoordinateSpan span;
-    span.latitudeDelta = 0.005;
-    span.longitudeDelta = 0.005;
-    BMKCoordinateRegion region;
-    region.center = location.coordinate;
-    region.span = span;
-    [self.mapView setRegion:region animated:YES];
+    if (self.nowCoordinateSpanType == SJCoordinateSpanTypeAuto) {
+        BMKCoordinateSpan span;
+        span.latitudeDelta = 0.05;
+        span.longitudeDelta = 0.05;
+        BMKCoordinateRegion region;
+        region.center = location.coordinate;
+        region.span = span;
+        [self.mapView setRegion:region animated:YES];
+    }
     
     //添加当前点
     //每返回一个点,作为当前点添加标注,将地图的显示区域移动到定位到的位置
@@ -117,59 +136,9 @@
         }
         // MKPolyline
         BMKPolyline *poly = [BMKPolyline polylineWithCoordinates:coordinates count:self.allLocations.count];
-        
         [self.mapView addOverlay:poly];
     }
 }
-
-
-#pragma mark - location manager delegate
-
-//
-//-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations{
-//
-//    CLLocation *location = locations.lastObject;
-//
-//    //当存放位置的数组为空,则为定位到的第一个点, 同时要设置地图的显示区域
-//    if (self.allLocations.count == 0) {
-//        //得到第一个点,添加开始点标注
-//        QYAnnotation *anno = [[QYAnnotation alloc] init];
-//        anno.coordinate = location.coordinate;
-//        anno.title = @"开始";
-//        anno.type = 1;
-//        [self.mapView addAnnotation:anno];
-//
-//        MKCoordinateSpan span = MKCoordinateSpanMake(0.005, 0.005);
-//        MKCoordinateRegion region = MKCoordinateRegionMake(location.coordinate, span);
-//        [self.mapView setRegion:region animated:YES];
-//    }
-//
-//    [self.allLocations addObject:location];
-//
-//
-//    //添加当前点
-//     //每返回一个点,作为当前点添加标注,将地图的显示区域移动到定位到的位置
-//    QYAnnotation *nowAnno = [[QYAnnotation alloc] init];
-//    nowAnno.coordinate = location.coordinate;
-//    nowAnno.type = 0;
-//    [self.mapView addAnnotation:nowAnno];
-//    if (self.nowAnnotation) {
-//        [self.mapView removeAnnotation:self.nowAnnotation];
-//    }
-//    self.nowAnnotation = nowAnno;
-//
-//    //将所有的点记录,添加行走的路线
-//
-//    CLLocationCoordinate2D *coordinates = malloc(sizeof(CLLocationCoordinate2D) *self.allLocations.count);
-//    for (int i = 0; i < self.allLocations.count; i ++) {
-//        coordinates[i] = [self.allLocations[i] coordinate];
-//    }
-////    MKPolyline
-//    MKPolyline *poly = [MKPolyline polylineWithCoordinates:coordinates count:self.allLocations.count];
-//
-//    [self.mapView addOverlay:poly];
-//
-//}
 
 //返回标注视图
 - (BMKAnnotationView *)mapView:(BMKMapView *)mapView viewForAnnotation:(id<BMKAnnotation>)annotation{
@@ -183,7 +152,7 @@
         }
         //给视图绑定数据
         annoView.annotation = annotation;
-        annoView.canShowCallout = YES;//显示 callout
+        annoView.canShowCallout = YES;  // 显示 callout
         //自定义图片
         switch (anno.annotationType) {
             case SJAnnotationTypeNow:
@@ -218,8 +187,7 @@
     return nil;
 }
 
-
-//返回曲线视图
+// 返回绘制曲线视图
 - (BMKOverlayView *)mapView:(BMKMapView *)mapView viewForOverlay:(id<BMKOverlay>)overlay{
     if ([overlay isKindOfClass:[BMKPolyline class]]) {
         BMKPolylineView *renderer = [[BMKPolylineView alloc] initWithPolyline:overlay];
@@ -231,19 +199,10 @@
     return nil;
 }
 
-//-(MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay{
-//    if ([overlay isKindOfClass:[MKPolyline class]]) {
-//        MKPolylineRenderer *renderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
-//        //配置渲染图层的属性
-//        renderer.strokeColor = [UIColor blueColor];
-//        renderer.lineWidth = 3.f;
-//        return renderer;
-//    }
-//    return nil;
-//}
-
 - (void)dealloc {
     [self.locationService stopUserLocationService];
+    // 置空才能释放内存
+    self.mapView.delegate = nil;
 }
 
 - (void)didReceiveMemoryWarning {

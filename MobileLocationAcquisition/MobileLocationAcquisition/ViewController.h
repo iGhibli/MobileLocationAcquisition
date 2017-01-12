@@ -13,6 +13,11 @@ typedef enum {
     SJPathDrawTypeDraw = 1,      ///< 绘制
 }SJPathDrawType;
 
+typedef enum {
+    SJCoordinateSpanTypeAuto = 0,       ///< 自动
+    SJCoordinateSpanTypeCustom = 1,     ///< 用户更改
+}SJCoordinateSpanType;
+
 @interface ViewController : UIViewController
 
 
