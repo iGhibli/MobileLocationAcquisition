@@ -54,42 +54,67 @@
     [_locationService startUserLocationService];
     
 }
+// 存储保留坐标
+- (void)saveGPXDatas:(NSArray *)gpxs {
+    if (gpxs.count > 0) {
+        [DataBaseEngine deleteAllGPXs];
+        for (CLLocation *loca in gpxs) {
+            [DataBaseEngine saveGPXDataLatitude:loca.coordinate.latitude andLongitude:loca.coordinate.longitude];
+        }
+    }
+}
+
 // 开始
 - (IBAction)beginAction:(UIButton *)sender {
-    // 得到第一个点,添加开始点标注
-    self.nowPathDrawType = SJPathDrawTypeDraw;
-    QYAnnotation *anno = [[QYAnnotation alloc] init];
-    anno.coordinate = self.nowAnnotation.coordinate;
-    anno.annotationType = SJAnnotationTypeStart;
-    anno.title = @"开始";
-    [self.mapView addAnnotation:anno];
-    [self.allLocations addObject:self.nowAnnotation.nowLocation];
+    if (self.nowPathDrawType != SJPathDrawTypeDraw) {
+        // 得到第一个点,添加开始点标注
+        self.nowPathDrawType = SJPathDrawTypeDraw;
+        QYAnnotation *anno = [[QYAnnotation alloc] init];
+        anno.coordinate = self.nowAnnotation.coordinate;
+        anno.annotationType = SJAnnotationTypeStart;
+        anno.title = @"开始";
+        [self.mapView addAnnotation:anno];
+        [self.allLocations addObject:self.nowAnnotation.nowLocation];
+    }
 }
-// 暂停
+// 暂停(暂存)
 - (IBAction)pauseAction:(UIButton *)sender {
-    // 添加一个暂停点
-    self.nowPathDrawType = SJPathDrawTypeNone;
-    QYAnnotation *anno = [[QYAnnotation alloc] init];
-    anno.coordinate = self.nowAnnotation.coordinate;
-    anno.annotationType = SJAnnotationTypePause;
-    anno.title = @"暂停";
-    [self.mapView addAnnotation:anno];
+    if (self.nowPathDrawType == SJPathDrawTypeDraw) {
+        // 添加一个暂停点
+        self.nowPathDrawType = SJPathDrawTypeNone;
+        QYAnnotation *anno = [[QYAnnotation alloc] init];
+        anno.coordinate = self.nowAnnotation.coordinate;
+        anno.annotationType = SJAnnotationTypePause;
+        anno.title = @"暂停";
+        [self.mapView addAnnotation:anno];
+        // 暂存当前坐标
+        [self saveGPXDatas:self.allLocations];
+    }
 }
 // 结束
 - (IBAction)stopAction:(UIButton *)sender {
-    // 添加一个结束点标注
-    self.nowPathDrawType = SJPathDrawTypeNone;
-    QYAnnotation *anno = [[QYAnnotation alloc] init];
-    anno.coordinate = self.nowAnnotation.coordinate;
-    anno.annotationType = SJAnnotationTypeStop;
-    anno.title = @"结束";
-    [self.mapView addAnnotation:anno];
-}
-// 暂存
-- (IBAction)temporaryStorageAction:(UIButton *)sender {
+    if (self.nowPathDrawType == SJPathDrawTypeDraw) {
+        // 添加一个结束点标注
+        self.nowPathDrawType = SJPathDrawTypeNone;
+        QYAnnotation *anno = [[QYAnnotation alloc] init];
+        anno.coordinate = self.nowAnnotation.coordinate;
+        anno.annotationType = SJAnnotationTypeStop;
+        anno.title = @"结束";
+        [self.mapView addAnnotation:anno];
+        // 结束保存所有坐标
+        [self saveGPXDatas:self.allLocations];
+    }
 }
 // 重做
 - (IBAction)redoAction:(UIButton *)sender {
+    self.nowPathDrawType = SJPathDrawTypeNone;
+    [self.allLocations removeAllObjects];
+    // 移除数据库坐标
+    [DataBaseEngine deleteAllGPXs];
+    // 移除所有绘制
+    [self.mapView removeOverlays:self.mapView.overlays];
+    // 移除所有标注
+    [self.mapView removeAnnotations:self.mapView.annotations];
 }
 // 回显
 - (IBAction)redisplay:(UIButton *)sender {
@@ -118,8 +143,8 @@
     // 设置地图的显示区域
     if (self.nowCoordinateSpanType == SJCoordinateSpanTypeAuto) {
         BMKCoordinateSpan span;
-        span.latitudeDelta = 0.05;
-        span.longitudeDelta = 0.05;
+        span.latitudeDelta = 0.5;
+        span.longitudeDelta = 0.5;
         BMKCoordinateRegion region;
         region.center = location.coordinate;
         region.span = span;
