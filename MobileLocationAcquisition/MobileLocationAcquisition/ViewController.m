@@ -62,7 +62,7 @@
     anno.annotationType = SJAnnotationTypeStart;
     anno.title = @"开始";
     [self.mapView addAnnotation:anno];
-    [self.allLocations addObject:location];
+    [self.allLocations addObject:self.nowAnnotation.nowLocation];
 }
 
 - (IBAction)pauseAction:(UIButton *)sender {
@@ -122,6 +122,7 @@
     QYAnnotation *nowAnno = [[QYAnnotation alloc] init];
     nowAnno.coordinate = location.coordinate;
     nowAnno.annotationType = SJAnnotationTypeNow;
+    nowAnno.nowLocation = location;
     [self.mapView addAnnotation:nowAnno];
     if (self.nowAnnotation) {
         [self.mapView removeAnnotation:self.nowAnnotation];

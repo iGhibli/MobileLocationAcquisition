@@ -18,10 +18,10 @@ typedef enum {
 
 @interface QYAnnotation : NSObject<BMKAnnotation>
 
-@property(nonatomic)CLLocationCoordinate2D coordinate;  // 遵守Annotation协议
+@property(nonatomic)CLLocationCoordinate2D coordinate;    // 遵守Annotation协议
 @property (nonatomic, copy)NSString *title;
-
 //自定义属性
 @property (nonatomic) SJAnnotationType annotationType;    // 0,当前点,1开始点,2暂停点,3结束点
+@property (nonatomic) CLLocation *nowLocation;            // 保存当前的CLLocation
 
 @end
