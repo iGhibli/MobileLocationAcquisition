@@ -10,6 +10,7 @@
 #import <BaiduMapAPI_Map/BMKMapComponent.h>
 #import <BaiduMapAPI_Location/BMKLocationComponent.h>
 #import "QYAnnotation.h"
+#import "DataBaseEngine.h"
 
 @interface ViewController ()<BMKLocationServiceDelegate, BMKMapViewDelegate>
 @property (weak, nonatomic) IBOutlet BMKMapView *mapView;
@@ -53,7 +54,7 @@
     [_locationService startUserLocationService];
     
 }
-
+// 开始
 - (IBAction)beginAction:(UIButton *)sender {
     // 得到第一个点,添加开始点标注
     self.nowPathDrawType = SJPathDrawTypeDraw;
@@ -64,7 +65,7 @@
     [self.mapView addAnnotation:anno];
     [self.allLocations addObject:self.nowAnnotation.nowLocation];
 }
-
+// 暂停
 - (IBAction)pauseAction:(UIButton *)sender {
     // 添加一个暂停点
     self.nowPathDrawType = SJPathDrawTypeNone;
@@ -74,7 +75,7 @@
     anno.title = @"暂停";
     [self.mapView addAnnotation:anno];
 }
-
+// 结束
 - (IBAction)stopAction:(UIButton *)sender {
     // 添加一个结束点标注
     self.nowPathDrawType = SJPathDrawTypeNone;
@@ -84,17 +85,25 @@
     anno.title = @"结束";
     [self.mapView addAnnotation:anno];
 }
-
+// 暂存
+- (IBAction)temporaryStorageAction:(UIButton *)sender {
+}
+// 重做
+- (IBAction)redoAction:(UIButton *)sender {
+}
+// 回显
+- (IBAction)redisplay:(UIButton *)sender {
+    
+}
+// 上传
+- (IBAction)uploadAction:(UIButton *)sender {
+}
+// 重新设置显示区域
 - (IBAction)spanSetAction:(UIButton *)sender {
     if (self.nowCoordinateSpanType == SJCoordinateSpanTypeCustom) {
         self.nowCoordinateSpanType = SJCoordinateSpanTypeAuto;
     }
 }
-
-- (IBAction)redisplay:(UIButton *)sender {
-    
-}
-
 #pragma mark - BMKMapViewDelegate
 - (void)mapStatusDidChanged:(BMKMapView *)mapView {
     if (mapView.region.span.latitudeDelta != 0.05 && self.nowCoordinateSpanType == SJCoordinateSpanTypeAuto) {
