@@ -14,6 +14,7 @@
 
 @interface ViewController ()<BMKLocationServiceDelegate, BMKMapViewDelegate>
 @property (weak, nonatomic) IBOutlet BMKMapView *mapView;
+@property (weak, nonatomic) IBOutlet UIButton *nowSpanBtn;
 
 @property (strong, nonatomic) BMKLocationService *locationService;
 @property (nonatomic, strong) NSMutableArray *allLocations;
@@ -27,6 +28,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.nowSpanBtn.layer.cornerRadius = 25.f;
+    self.nowSpanBtn.clipsToBounds = YES;
     
     self.allLocations = [NSMutableArray array];
     self.nowPathDrawType = SJPathDrawTypeNone;
@@ -122,6 +125,7 @@
 }
 // 上传
 - (IBAction)uploadAction:(UIButton *)sender {
+    // 邮件解决
 }
 // 重新设置显示区域
 - (IBAction)spanSetAction:(UIButton *)sender {

@@ -103,12 +103,13 @@
                                     <action selector="uploadAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gBi-ne-HRW"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SiM-ke-30S">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SiM-ke-30S">
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="50" id="DmP-Hg-AFC"/>
                                     <constraint firstAttribute="width" secondItem="SiM-ke-30S" secondAttribute="height" multiplier="1:1" id="M64-fS-4Fa"/>
                                 </constraints>
-                                <state key="normal" title="Now"/>
+                                <state key="normal" image="now"/>
                                 <connections>
                                     <action selector="spanSetAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="25h-QK-AWy"/>
                                 </connections>
@@ -125,23 +126,27 @@
                             <constraint firstItem="AbO-0c-Rr6" firstAttribute="top" secondItem="6Kk-4g-8ET" secondAttribute="bottom" constant="10" id="OBG-ev-ytm"/>
                             <constraint firstAttribute="trailing" secondItem="AbO-0c-Rr6" secondAttribute="trailing" constant="10" id="Rt6-ku-YPV"/>
                             <constraint firstAttribute="trailing" secondItem="8LV-Xf-6uH" secondAttribute="trailing" id="VMQ-6Y-zJm"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="SiM-ke-30S" secondAttribute="bottom" constant="10" id="Xag-cf-ULB"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="SiM-ke-30S" secondAttribute="bottom" constant="5" id="Xag-cf-ULB"/>
                             <constraint firstItem="8LV-Xf-6uH" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="aCU-hS-4co"/>
                             <constraint firstItem="xDf-0h-5dD" firstAttribute="top" secondItem="AbO-0c-Rr6" secondAttribute="bottom" constant="10" id="eKh-EB-Jp8"/>
                             <constraint firstAttribute="trailing" secondItem="xDf-0h-5dD" secondAttribute="trailing" constant="10" id="nxq-qR-OZr"/>
                             <constraint firstItem="6Kk-4g-8ET" firstAttribute="top" secondItem="oKF-YW-AhT" secondAttribute="bottom" constant="10" id="oTz-Nq-PAH"/>
                             <constraint firstItem="Xas-0T-1My" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="10" id="p0Q-vU-ymd"/>
                             <constraint firstItem="s1c-gB-yOO" firstAttribute="top" secondItem="Xas-0T-1My" secondAttribute="bottom" constant="10" id="qJy-iY-Dd9"/>
-                            <constraint firstItem="SiM-ke-30S" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="10" id="wLg-gN-XQ3"/>
                             <constraint firstItem="8LV-Xf-6uH" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="yDf-KW-uZ1"/>
+                            <constraint firstAttribute="trailing" secondItem="SiM-ke-30S" secondAttribute="trailing" constant="5" id="zDS-hT-2ew"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="mapView" destination="8LV-Xf-6uH" id="sy1-2F-mLo"/>
+                        <outlet property="nowSpanBtn" destination="SiM-ke-30S" id="ACm-bB-V3Z"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
         </scene>
     </scenes>
+    <resources>
+        <image name="now" width="22" height="22"/>
+    </resources>
 </document>
