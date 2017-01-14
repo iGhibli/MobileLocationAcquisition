@@ -112,7 +112,9 @@
         anno.annotationType = SJAnnotationTypeStart;
         anno.title = @"开始";
         [self.mapView addAnnotation:anno];
-        [self.allLocations addObject:self.nowAnnotation.nowLocation];
+        if (self.nowAnnotation.nowLocation != nil) {
+            [self.allLocations addObject:self.nowAnnotation.nowLocation];
+        }
     }
 }
 // 暂停(暂存)
@@ -156,7 +158,37 @@
 }
 // 回显
 - (IBAction)redisplay:(UIButton *)sender {
-    
+    [self redisplayPath];
+}
+- (void)redisplayPath {
+    if (self.allLocations.count < 1) {
+        return;
+    }
+    NSArray *tempArray = [NSArray arrayWithArray:self.allLocations];
+    [self.allLocations removeAllObjects];
+    // 移除所有绘制
+    [self.mapView removeOverlays:self.mapView.overlays];
+    // 移除所有标注
+    [self.mapView removeAnnotations:self.mapView.annotations];
+    NSMutableArray *redisplayArray = [NSMutableArray array];
+    __block int j = 0;
+    [NSTimer scheduledTimerWithTimeInterval:0.3 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        if (j > tempArray.count - 2) {
+            [timer invalidate];
+            timer = nil;
+        }
+        [redisplayArray addObject:tempArray[j]];
+        //将所有的点记录,添加行走的路线
+        CLLocationCoordinate2D *coordinates = malloc(sizeof(CLLocationCoordinate2D) *redisplayArray.count);
+        for (int i = 0; i < redisplayArray.count; i ++) {
+            coordinates[i] = [redisplayArray[i] coordinate];
+        }
+        // MKPolyline
+        BMKPolyline *poly = [BMKPolyline polylineWithCoordinates:coordinates count:redisplayArray.count];
+        [self.mapView addOverlay:poly];
+        j++;
+    }];
+    self.allLocations = [NSMutableArray arrayWithArray:tempArray];
 }
 // 上传
 - (IBAction)uploadAction:(UIButton *)sender {
