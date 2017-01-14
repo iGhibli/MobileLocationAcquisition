@@ -55,7 +55,42 @@
     self.mapView.delegate = self;
     // 直接开启定位
     [_locationService startUserLocationService];
-    
+    // 读取是否有暂存
+    NSArray *DBArray = [DataBaseEngine getGPXDatas];
+    if (DBArray.count > 0) {
+        for (NSDictionary *dict in DBArray) {
+            CLLocation *tempLocation = [[CLLocation alloc]initWithLatitude:[dict[@"lat"] doubleValue] longitude:[dict[@"lon"] doubleValue]];
+            [self.allLocations addObject:tempLocation];
+        }
+        if (self.allLocations.count > 0) {
+            [self displayTemporaryStorageData];
+        }
+    }
+}
+// 显示暂存信息
+- (void)displayTemporaryStorageData {
+    // 得到第一个点,添加开始点标注
+    QYAnnotation *startAnno = [[QYAnnotation alloc] init];
+    CLLocation *startLoc = self.allLocations.firstObject;
+    startAnno.coordinate = startLoc.coordinate;
+    startAnno.annotationType = SJAnnotationTypeStart;
+    startAnno.title = @"开始";
+    [self.mapView addAnnotation:startAnno];
+    //将所有的点记录,添加行走的路线
+    CLLocationCoordinate2D *coordinates = malloc(sizeof(CLLocationCoordinate2D) *self.allLocations.count);
+    for (int i = 0; i < self.allLocations.count; i ++) {
+        coordinates[i] = [self.allLocations[i] coordinate];
+    }
+    // MKPolyline
+    BMKPolyline *poly = [BMKPolyline polylineWithCoordinates:coordinates count:self.allLocations.count];
+    [self.mapView addOverlay:poly];
+    // 添加一个暂停点
+    QYAnnotation *pauseAnno = [[QYAnnotation alloc] init];
+    CLLocation *pauseLoc = self.allLocations.lastObject;
+    pauseAnno.coordinate = pauseLoc.coordinate;
+    pauseAnno.annotationType = SJAnnotationTypePause;
+    pauseAnno.title = @"暂停";
+    [self.mapView addAnnotation:pauseAnno];
 }
 // 存储保留坐标
 - (void)saveGPXDatas:(NSArray *)gpxs {
@@ -96,7 +131,7 @@
 }
 // 结束
 - (IBAction)stopAction:(UIButton *)sender {
-    if (self.nowPathDrawType == SJPathDrawTypeDraw) {
+    if (self.allLocations.count > 0) {
         // 添加一个结束点标注
         self.nowPathDrawType = SJPathDrawTypeNone;
         QYAnnotation *anno = [[QYAnnotation alloc] init];
@@ -147,8 +182,8 @@
     // 设置地图的显示区域
     if (self.nowCoordinateSpanType == SJCoordinateSpanTypeAuto) {
         BMKCoordinateSpan span;
-        span.latitudeDelta = 0.5;
-        span.longitudeDelta = 0.5;
+        span.latitudeDelta = 0.005;
+        span.longitudeDelta = 0.005;
         BMKCoordinateRegion region;
         region.center = location.coordinate;
         region.span = span;

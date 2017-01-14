@@ -449,6 +449,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileLocationAcquisition/Vender",
+					"$(PROJECT_DIR)/MobileLocationAcquisition/Tracking/Extern",
 				);
 				GCC_INPUT_FILETYPE = sourcecode.c.objc;
 				INFOPLIST_FILE = MobileLocationAcquisition/Info.plist;
@@ -472,6 +473,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileLocationAcquisition/Vender",
+					"$(PROJECT_DIR)/MobileLocationAcquisition/Tracking/Extern",
 				);
 				GCC_INPUT_FILETYPE = sourcecode.c.objc;
 				INFOPLIST_FILE = MobileLocationAcquisition/Info.plist;
