@@ -38,6 +38,10 @@
 		5342D92C1E23BC1900B7DD90 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5342D92B1E23BC1900B7DD90 /* CoreTelephony.framework */; };
 		5342D92E1E23BC2300B7DD90 /* libstdc++.6.0.9.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5342D92D1E23BC2300B7DD90 /* libstdc++.6.0.9.tbd */; };
 		5342D9311E23BD0000B7DD90 /* mapapi.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5342D9301E23BD0000B7DD90 /* mapapi.bundle */; };
+		5370CEC41E2A30CE004F62EC /* Tracking.m in Sources */ = {isa = PBXBuildFile; fileRef = 5370CEC31E2A30CE004F62EC /* Tracking.m */; };
+		5370CEC81E2A361D004F62EC /* ball@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5370CEC61E2A361D004F62EC /* ball@2x.png */; };
+		5370CEC91E2A361D004F62EC /* ball.png in Resources */ = {isa = PBXBuildFile; fileRef = 5370CEC71E2A361D004F62EC /* ball.png */; };
+		5370CECB1E2A362A004F62EC /* GuGong.tracking in Resources */ = {isa = PBXBuildFile; fileRef = 5370CECA1E2A362A004F62EC /* GuGong.tracking */; };
 		53FA9F541E25E70D0009468D /* QYAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 53FA9F531E25E70D0009468D /* QYAnnotation.m */; };
 		53FA9F5A1E2623EE0009468D /* run.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 53FA9F591E2623EE0009468D /* run.gpx */; };
 /* End PBXBuildFile section */
@@ -86,6 +90,11 @@
 		5342D92B1E23BC1900B7DD90 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		5342D92D1E23BC2300B7DD90 /* libstdc++.6.0.9.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.6.0.9.tbd"; path = "usr/lib/libstdc++.6.0.9.tbd"; sourceTree = SDKROOT; };
 		5342D9301E23BD0000B7DD90 /* mapapi.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = mapapi.bundle; sourceTree = "<group>"; };
+		5370CEC21E2A30CE004F62EC /* Tracking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tracking.h; sourceTree = "<group>"; };
+		5370CEC31E2A30CE004F62EC /* Tracking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tracking.m; sourceTree = "<group>"; };
+		5370CEC61E2A361D004F62EC /* ball@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ball@2x.png"; sourceTree = "<group>"; };
+		5370CEC71E2A361D004F62EC /* ball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ball.png; sourceTree = "<group>"; };
+		5370CECA1E2A362A004F62EC /* GuGong.tracking */ = {isa = PBXFileReference; lastKnownFileType = file; path = GuGong.tracking; sourceTree = "<group>"; };
 		53FA9F521E25E70D0009468D /* QYAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYAnnotation.h; sourceTree = "<group>"; };
 		53FA9F531E25E70D0009468D /* QYAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYAnnotation.m; sourceTree = "<group>"; };
 		53FA9F591E2623EE0009468D /* run.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = run.gpx; sourceTree = "<group>"; };
@@ -171,6 +180,7 @@
 		5342D8F41E23B25A00B7DD90 /* MobileLocationAcquisition */ = {
 			isa = PBXGroup;
 			children = (
+				5370CEC11E2A30CE004F62EC /* Tracking */,
 				53108D821E2799CA004880C8 /* Tools */,
 				5342D90C1E23BB6B00B7DD90 /* Vender */,
 				5342D8F81E23B25A00B7DD90 /* AppDelegate.h */,
@@ -242,6 +252,18 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		5370CEC11E2A30CE004F62EC /* Tracking */ = {
+			isa = PBXGroup;
+			children = (
+				5370CEC61E2A361D004F62EC /* ball@2x.png */,
+				5370CEC71E2A361D004F62EC /* ball.png */,
+				5370CECA1E2A362A004F62EC /* GuGong.tracking */,
+				5370CEC21E2A30CE004F62EC /* Tracking.h */,
+				5370CEC31E2A30CE004F62EC /* Tracking.m */,
+			);
+			path = Tracking;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -307,6 +329,9 @@
 				5342D9021E23B25A00B7DD90 /* Assets.xcassets in Resources */,
 				5342D9001E23B25A00B7DD90 /* Main.storyboard in Resources */,
 				53108D871E2799EE004880C8 /* GPX.db in Resources */,
+				5370CECB1E2A362A004F62EC /* GuGong.tracking in Resources */,
+				5370CEC91E2A361D004F62EC /* ball.png in Resources */,
+				5370CEC81E2A361D004F62EC /* ball@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -317,6 +342,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5370CEC41E2A30CE004F62EC /* Tracking.m in Sources */,
 				5342D8FD1E23B25A00B7DD90 /* ViewController.m in Sources */,
 				5342D8FA1E23B25A00B7DD90 /* AppDelegate.m in Sources */,
 				53FA9F541E25E70D0009468D /* QYAnnotation.m in Sources */,

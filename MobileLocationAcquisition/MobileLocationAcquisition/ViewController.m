@@ -11,10 +11,13 @@
 #import <BaiduMapAPI_Location/BMKLocationComponent.h>
 #import "QYAnnotation.h"
 #import "DataBaseEngine.h"
+#import "Tracking.h"
 
-@interface ViewController ()<BMKLocationServiceDelegate, BMKMapViewDelegate>
+@interface ViewController ()<BMKLocationServiceDelegate, BMKMapViewDelegate, TrackingDelegate>
 @property (weak, nonatomic) IBOutlet BMKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UIButton *nowSpanBtn;
+
+@property (nonatomic, strong) Tracking *tracking;
 
 @property (strong, nonatomic) BMKLocationService *locationService;
 @property (nonatomic, strong) NSMutableArray *allLocations;
@@ -156,8 +159,30 @@
 }
 // 回显
 - (IBAction)redisplay:(UIButton *)sender {
-    
+    if (self.tracking == nil) {
+        [self setupTracking];
+    }
+    [self.tracking execute];
 }
+// 构建轨迹回放
+- (void)setupTracking {
+    NSString *trackingFilePath = [[NSBundle mainBundle] pathForResource:@"GuGong" ofType:@"tracking"];
+    
+    NSData *trackingData = [NSData dataWithContentsOfFile:trackingFilePath];
+    
+    CLLocationCoordinate2D *coordinates = (CLLocationCoordinate2D *)malloc(trackingData.length);
+    
+    /* 提取轨迹原始数据. */
+    [trackingData getBytes:coordinates length:trackingData.length];
+    
+    /* 构建tracking. */
+    self.tracking = [[Tracking alloc] initWithCoordinates:coordinates count:trackingData.length / sizeof(CLLocationCoordinate2D)];
+    self.tracking.delegate = self;
+    self.tracking.mapView  = self.mapView;
+    self.tracking.duration = 5.f;
+    self.tracking.edgeInsets = UIEdgeInsetsMake(50, 50, 50, 50);
+}
+
 // 上传
 - (IBAction)uploadAction:(UIButton *)sender {
     // 邮件解决
@@ -257,6 +282,19 @@
                 break;
         }
         return annoView;
+    }else if (annotation == self.tracking.annotation) {
+        static NSString *trackingReuseIndetifier = @"trackingReuseIndetifier";
+        
+        BMKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:trackingReuseIndetifier];
+        
+        if (annotationView == nil)
+        {
+            annotationView = [[BMKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:trackingReuseIndetifier];
+        }
+        
+        annotationView.canShowCallout = NO;
+        annotationView.image = [UIImage imageNamed:@"ball"];
+        return annotationView;
     }
     return nil;
 }
@@ -269,8 +307,22 @@
         renderer.strokeColor = [UIColor blueColor];
         renderer.lineWidth = 3.f;
         return renderer;
+    }else if (overlay == self.tracking.polyline) {
+        BMKPolylineView *polylineView = [[BMKPolylineView alloc] initWithPolyline:overlay];
+        polylineView.lineWidth   = 4.f;
+        polylineView.strokeColor = [UIColor greenColor];
+        return polylineView;
     }
     return nil;
+}
+
+#pragma mark - TrackingDelegate
+- (void)willBeginTracking:(Tracking *)tracking {
+    NSLog(@"%s", __func__);
+}
+
+- (void)didEndTracking:(Tracking *)tracking {
+    NSLog(@"%s", __func__);
 }
 
 - (void)dealloc {
