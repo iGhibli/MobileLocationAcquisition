@@ -109,16 +109,24 @@
             UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"继续" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 // 读取暂存
                 if (DBArray.count > 0) {
-                    for (NSDictionary *dict in DBArray) {
-                        CLLocation *tempLocation = [[CLLocation alloc]initWithLatitude:[dict[@"lat"] doubleValue] longitude:[dict[@"lon"] doubleValue]];
-                        [self.allLocations addObject:tempLocation];
-                    }
-                    if (self.allLocations.count > 0) {
+                    if (self.allLocations > 0) {
                         [self.allLocations addObject:self.nowAnnotation.nowLocation];
                         [self displayTemporaryStorageData];
+                        [self showAllAnnotationsIsWithCurrentLocation:YES];
+                        self.nowPathDrawType = SJPathDrawTypeDraw;
+                    }else {
+                        for (NSDictionary *dict in DBArray) {
+                            CLLocation *tempLocation = [[CLLocation alloc]initWithLatitude:[dict[@"lat"] doubleValue] longitude:[dict[@"lon"] doubleValue]];
+                            [self.allLocations addObject:tempLocation];
+                        }
+                        if (self.allLocations.count > 0) {
+                            [self.allLocations addObject:self.nowAnnotation.nowLocation];
+                            [self displayTemporaryStorageData];
+                        }
+                        [self showAllAnnotationsIsWithCurrentLocation:YES];
+                        self.nowPathDrawType = SJPathDrawTypeDraw;
                     }
-                    [self showAllAnnotationsIsWithCurrentLocation:YES];
-                    self.nowPathDrawType = SJPathDrawTypeDraw;
+                    
                 }
             }];
             UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
