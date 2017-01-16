@@ -114,6 +114,7 @@
                         [self.allLocations addObject:tempLocation];
                     }
                     if (self.allLocations.count > 0) {
+                        [self.allLocations addObject:self.nowAnnotation.nowLocation];
                         [self displayTemporaryStorageData];
                     }
                     [self showAllAnnotationsIsWithCurrentLocation:YES];
@@ -168,28 +169,42 @@
 // 结束
 - (IBAction)stopAction:(UIButton *)sender {
     if (self.allLocations.count > 0) {
-        // 添加一个结束点标注
-        self.nowPathDrawType = SJPathDrawTypeNone;
-        QYAnnotation *anno = [[QYAnnotation alloc] init];
-        anno.coordinate = self.nowAnnotation.coordinate;
-        anno.annotationType = SJAnnotationTypeStop;
-        anno.title = @"结束";
-        [self.mapView addAnnotation:anno];
-        // 结束保存所有坐标
-        [self saveGPXDatas:self.allLocations];
+        UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"确定执行结束？" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {  }];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+            // 添加一个结束点标注
+            self.nowPathDrawType = SJPathDrawTypeNone;
+            QYAnnotation *anno = [[QYAnnotation alloc] init];
+            anno.coordinate = self.nowAnnotation.coordinate;
+            anno.annotationType = SJAnnotationTypeStop;
+            anno.title = @"结束";
+            [self.mapView addAnnotation:anno];
+            // 结束保存所有坐标
+            [self saveGPXDatas:self.allLocations];
+        }];
+        [alertC addAction:okAction];
+        [alertC addAction:deleteAction];
+        [self presentViewController:alertC animated:YES completion:^{   }];
     }
 }
 // 重做
 - (IBAction)redoAction:(UIButton *)sender {
-    self.isRedisplay = NO;
-    self.nowPathDrawType = SJPathDrawTypeNone;
-    [self.allLocations removeAllObjects];
-    // 移除数据库坐标
-    [DataBaseEngine deleteAllGPXs];
-    // 移除所有绘制
-    [self.mapView removeOverlays:self.mapView.overlays];
-    // 移除所有标注
-    [self.mapView removeAnnotations:self.mapView.annotations];
+    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"确定执行重做，执行后会删除本地所有信息？" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"否" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {  }];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"是" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        self.isRedisplay = NO;
+        self.nowPathDrawType = SJPathDrawTypeNone;
+        [self.allLocations removeAllObjects];
+        // 移除数据库坐标
+        [DataBaseEngine deleteAllGPXs];
+        // 移除所有绘制
+        [self.mapView removeOverlays:self.mapView.overlays];
+        // 移除所有标注
+        [self.mapView removeAnnotations:self.mapView.annotations];
+    }];
+    [alertC addAction:okAction];
+    [alertC addAction:deleteAction];
+    [self presentViewController:alertC animated:YES completion:^{   }];
 }
 // 回显
 - (IBAction)redisplay:(UIButton *)sender {
@@ -250,8 +265,8 @@
     CGFloat maxLon = [[lonArray valueForKeyPath:@"@max.floatValue"] floatValue];
     CGFloat minLon = [[lonArray valueForKeyPath:@"@min.floatValue"] floatValue];
     BMKCoordinateSpan span;
-    span.latitudeDelta = maxLat - minLat + 0.001;
-    span.longitudeDelta = maxLon - minLon + 0.001;
+    span.latitudeDelta = maxLat - minLat + 0.002;
+    span.longitudeDelta = maxLon - minLon + 0.0015;
     CLLocationCoordinate2D center;
     center.latitude = (maxLat + minLat)/2;
     center.longitude = (maxLon + minLon)/2;
