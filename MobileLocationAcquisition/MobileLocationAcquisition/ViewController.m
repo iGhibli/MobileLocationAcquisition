@@ -60,7 +60,13 @@
     [_locationService startUserLocationService];
     [NSTimer scheduledTimerWithTimeInterval:0.3 repeats:YES block:^(NSTimer * _Nonnull timer) {
         if (self.nowAnnotation != nil) {
-            [self spanSetAction:nil];
+            BMKCoordinateSpan span;
+            span.latitudeDelta = 0.005;
+            span.longitudeDelta = 0.005;
+            BMKCoordinateRegion region;
+            region.center = self.nowAnnotation.coordinate;
+            region.span = span;
+            [self.mapView setRegion:region animated:YES];
             [timer invalidate];
             timer = nil;
         }
@@ -242,6 +248,7 @@
 }
 // 重新设置显示区域
 - (IBAction)spanSetAction:(UIButton *)sender {
+    sender.selected = !sender.selected;
     if (self.nowCoordinateSpanType == SJCoordinateSpanTypeCustom) {
         self.nowCoordinateSpanType = SJCoordinateSpanTypeAuto;
         BMKCoordinateSpan span;
@@ -251,6 +258,8 @@
         region.center = self.nowAnnotation.coordinate;
         region.span = span;
         [self.mapView setRegion:region animated:YES];
+    }else {
+        self.nowCoordinateSpanType = SJCoordinateSpanTypeCustom;
     }
 }
 
@@ -274,7 +283,7 @@
     CGFloat minLon = [[lonArray valueForKeyPath:@"@min.floatValue"] floatValue];
     BMKCoordinateSpan span;
     span.latitudeDelta = maxLat - minLat + 0.002;
-    span.longitudeDelta = maxLon - minLon + 0.0015;
+    span.longitudeDelta = maxLon - minLon + 0.002;
     CLLocationCoordinate2D center;
     center.latitude = (maxLat + minLat)/2;
     center.longitude = (maxLon + minLon)/2;
@@ -282,16 +291,6 @@
     region.center = center;
     region.span = span;
     [self.mapView setRegion:region animated:YES];
-}
-
-#pragma mark - BMKMapViewDelegate
-- (void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-    if (mapView.region.span.latitudeDelta != 0.005 && self.nowCoordinateSpanType == SJCoordinateSpanTypeAuto) {
-        self.nowCoordinateSpanType = SJCoordinateSpanTypeCustom;
-        NSLog(@"-----1");
-    }else {
-        NSLog(@"-----2");
-    }
 }
 
 #pragma mark - BMK Location delegate
