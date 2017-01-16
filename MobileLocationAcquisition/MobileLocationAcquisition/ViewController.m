@@ -22,6 +22,8 @@
 @property (nonatomic, assign) SJPathDrawType nowPathDrawType;
 @property (nonatomic, assign) SJCoordinateSpanType nowCoordinateSpanType;
 
+@property (nonatomic, assign) BOOL isRedisplay;
+
 @end
 
 @implementation ViewController
@@ -34,6 +36,7 @@
     self.allLocations = [NSMutableArray array];
     self.nowPathDrawType = SJPathDrawTypeNone;
     self.nowCoordinateSpanType = SJCoordinateSpanTypeAuto;
+    self.isRedisplay = NO;
     
     _locationService = [[BMKLocationService alloc] init];
     _locationService.distanceFilter = 15.f;
@@ -55,17 +58,13 @@
     self.mapView.delegate = self;
     // 直接开启定位
     [_locationService startUserLocationService];
-    // 读取是否有暂存
-    NSArray *DBArray = [DataBaseEngine getGPXDatas];
-    if (DBArray.count > 0) {
-        for (NSDictionary *dict in DBArray) {
-            CLLocation *tempLocation = [[CLLocation alloc]initWithLatitude:[dict[@"lat"] doubleValue] longitude:[dict[@"lon"] doubleValue]];
-            [self.allLocations addObject:tempLocation];
+    [NSTimer scheduledTimerWithTimeInterval:0.3 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        if (self.nowAnnotation != nil) {
+            [self spanSetAction:nil];
+            [timer invalidate];
+            timer = nil;
         }
-        if (self.allLocations.count > 0) {
-            [self displayTemporaryStorageData];
-        }
-    }
+    }];
 }
 // 显示暂存信息
 - (void)displayTemporaryStorageData {
@@ -101,19 +100,54 @@
         }
     }
 }
-
 // 开始
 - (IBAction)beginAction:(UIButton *)sender {
     if (self.nowPathDrawType != SJPathDrawTypeDraw) {
-        // 得到第一个点,添加开始点标注
-        self.nowPathDrawType = SJPathDrawTypeDraw;
-        QYAnnotation *anno = [[QYAnnotation alloc] init];
-        anno.coordinate = self.nowAnnotation.coordinate;
-        anno.annotationType = SJAnnotationTypeStart;
-        anno.title = @"开始";
-        [self.mapView addAnnotation:anno];
-        if (self.nowAnnotation.nowLocation != nil) {
-            [self.allLocations addObject:self.nowAnnotation.nowLocation];
+        NSArray *DBArray = [DataBaseEngine getGPXDatas];
+        if (DBArray.count > 0) {
+            UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"提示" message:@"是否继续上次未完成进度？" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"继续" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                // 读取暂存
+                if (DBArray.count > 0) {
+                    for (NSDictionary *dict in DBArray) {
+                        CLLocation *tempLocation = [[CLLocation alloc]initWithLatitude:[dict[@"lat"] doubleValue] longitude:[dict[@"lon"] doubleValue]];
+                        [self.allLocations addObject:tempLocation];
+                    }
+                    if (self.allLocations.count > 0) {
+                        [self displayTemporaryStorageData];
+                    }
+                    [self showAllAnnotationsIsWithCurrentLocation:YES];
+                    self.nowPathDrawType = SJPathDrawTypeDraw;
+                }
+            }];
+            UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+                // 清空所有信息
+                [self redoAction:nil];
+                // 得到第一个点,添加开始点标注
+                self.nowPathDrawType = SJPathDrawTypeDraw;
+                QYAnnotation *anno = [[QYAnnotation alloc] init];
+                anno.coordinate = self.nowAnnotation.coordinate;
+                anno.annotationType = SJAnnotationTypeStart;
+                anno.title = @"开始";
+                [self.mapView addAnnotation:anno];
+                if (self.nowAnnotation.nowLocation != nil) {
+                    [self.allLocations addObject:self.nowAnnotation.nowLocation];
+                }
+            }];
+            [alertC addAction:okAction];
+            [alertC addAction:deleteAction];
+            [self presentViewController:alertC animated:YES completion:^{   }];
+        }else {
+            // 得到第一个点,添加开始点标注
+            self.nowPathDrawType = SJPathDrawTypeDraw;
+            QYAnnotation *anno = [[QYAnnotation alloc] init];
+            anno.coordinate = self.nowAnnotation.coordinate;
+            anno.annotationType = SJAnnotationTypeStart;
+            anno.title = @"开始";
+            [self.mapView addAnnotation:anno];
+            if (self.nowAnnotation.nowLocation != nil) {
+                [self.allLocations addObject:self.nowAnnotation.nowLocation];
+            }
         }
     }
 }
@@ -147,6 +181,7 @@
 }
 // 重做
 - (IBAction)redoAction:(UIButton *)sender {
+    self.isRedisplay = NO;
     self.nowPathDrawType = SJPathDrawTypeNone;
     [self.allLocations removeAllObjects];
     // 移除数据库坐标
@@ -158,37 +193,25 @@
 }
 // 回显
 - (IBAction)redisplay:(UIButton *)sender {
-    [self redisplayPath];
-}
-- (void)redisplayPath {
-    if (self.allLocations.count < 1) {
-        return;
+    if (self.isRedisplay == YES) {
+        if (self.allLocations.count > 0) {
+            [self showAllAnnotationsIsWithCurrentLocation:NO];
+        }
+    }else {
+        self.isRedisplay = YES;
+        // 读取是否有暂存
+        NSArray *DBArray = [DataBaseEngine getGPXDatas];
+        if (DBArray.count > 0) {
+            for (NSDictionary *dict in DBArray) {
+                CLLocation *tempLocation = [[CLLocation alloc]initWithLatitude:[dict[@"lat"] doubleValue] longitude:[dict[@"lon"] doubleValue]];
+                [self.allLocations addObject:tempLocation];
+            }
+            if (self.allLocations.count > 0) {
+                [self displayTemporaryStorageData];
+                [self showAllAnnotationsIsWithCurrentLocation:NO];
+            }
+        }
     }
-    NSArray *tempArray = [NSArray arrayWithArray:self.allLocations];
-    [self.allLocations removeAllObjects];
-    // 移除所有绘制
-    [self.mapView removeOverlays:self.mapView.overlays];
-    // 移除所有标注
-    [self.mapView removeAnnotations:self.mapView.annotations];
-    NSMutableArray *redisplayArray = [NSMutableArray array];
-    __block int j = 0;
-    [NSTimer scheduledTimerWithTimeInterval:0.3 repeats:YES block:^(NSTimer * _Nonnull timer) {
-        if (j > tempArray.count - 2) {
-            [timer invalidate];
-            timer = nil;
-        }
-        [redisplayArray addObject:tempArray[j]];
-        //将所有的点记录,添加行走的路线
-        CLLocationCoordinate2D *coordinates = malloc(sizeof(CLLocationCoordinate2D) *redisplayArray.count);
-        for (int i = 0; i < redisplayArray.count; i ++) {
-            coordinates[i] = [redisplayArray[i] coordinate];
-        }
-        // MKPolyline
-        BMKPolyline *poly = [BMKPolyline polylineWithCoordinates:coordinates count:redisplayArray.count];
-        [self.mapView addOverlay:poly];
-        j++;
-    }];
-    self.allLocations = [NSMutableArray arrayWithArray:tempArray];
 }
 // 上传
 - (IBAction)uploadAction:(UIButton *)sender {
@@ -198,15 +221,55 @@
 - (IBAction)spanSetAction:(UIButton *)sender {
     if (self.nowCoordinateSpanType == SJCoordinateSpanTypeCustom) {
         self.nowCoordinateSpanType = SJCoordinateSpanTypeAuto;
-    }
-}
-#pragma mark - BMKMapViewDelegate
-- (void)mapStatusDidChanged:(BMKMapView *)mapView {
-    if (mapView.region.span.latitudeDelta != 0.05 && self.nowCoordinateSpanType == SJCoordinateSpanTypeAuto) {
-//        self.nowCoordinateSpanType = SJCoordinateSpanTypeCustom;
+        BMKCoordinateSpan span;
+        span.latitudeDelta = 0.005;
+        span.longitudeDelta = 0.005;
+        BMKCoordinateRegion region;
+        region.center = self.nowAnnotation.coordinate;
+        region.span = span;
+        [self.mapView setRegion:region animated:YES];
     }
 }
 
+- (void)showAllAnnotationsIsWithCurrentLocation:(BOOL)isWith {
+    NSMutableArray *orderArray = [NSMutableArray arrayWithArray:self.allLocations];
+    if (isWith) {
+        if (self.nowAnnotation != nil) {
+            [orderArray addObject:self.nowAnnotation.nowLocation];
+        }
+    }
+    NSMutableArray *latArray = [NSMutableArray array];
+    NSMutableArray *lonArray = [NSMutableArray array];
+    for (CLLocation *tempLoca in orderArray) {
+        [latArray addObject:@(tempLoca.coordinate.latitude)];
+        [lonArray addObject:@(tempLoca.coordinate.longitude)];
+    }
+    CGFloat maxLat = [[latArray valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat minLat = [[latArray valueForKeyPath:@"@min.floatValue"] floatValue];
+    
+    CGFloat maxLon = [[lonArray valueForKeyPath:@"@max.floatValue"] floatValue];
+    CGFloat minLon = [[lonArray valueForKeyPath:@"@min.floatValue"] floatValue];
+    BMKCoordinateSpan span;
+    span.latitudeDelta = maxLat - minLat + 0.001;
+    span.longitudeDelta = maxLon - minLon + 0.001;
+    CLLocationCoordinate2D center;
+    center.latitude = (maxLat + minLat)/2;
+    center.longitude = (maxLon + minLon)/2;
+    BMKCoordinateRegion region;
+    region.center = center;
+    region.span = span;
+    [self.mapView setRegion:region animated:YES];
+}
+
+#pragma mark - BMKMapViewDelegate
+- (void)mapView:(BMKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
+    if (mapView.region.span.latitudeDelta != 0.005 && self.nowCoordinateSpanType == SJCoordinateSpanTypeAuto) {
+        self.nowCoordinateSpanType = SJCoordinateSpanTypeCustom;
+        NSLog(@"-----1");
+    }else {
+        NSLog(@"-----2");
+    }
+}
 
 #pragma mark - BMK Location delegate
 -(void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation{
