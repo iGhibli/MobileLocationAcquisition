@@ -30,8 +30,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.nowSpanBtn.layer.cornerRadius = 25.f;
+    self.nowSpanBtn.layer.cornerRadius = 5.f;
     self.nowSpanBtn.clipsToBounds = YES;
+    self.nowSpanBtn.selected = YES;
     
     self.allLocations = [NSMutableArray array];
     self.nowPathDrawType = SJPathDrawTypeNone;
@@ -222,6 +223,8 @@
 }
 // 回显
 - (IBAction)redisplay:(UIButton *)sender {
+    self.nowSpanBtn.selected = NO;
+    self.nowCoordinateSpanType = SJCoordinateSpanTypeCustom;
     if (self.isRedisplay == YES) {
         if (self.allLocations.count > 0) {
             [self showAllAnnotationsIsWithCurrentLocation:NO];
