@@ -15,6 +15,12 @@
 @interface ViewController ()<BMKLocationServiceDelegate, BMKMapViewDelegate>
 @property (weak, nonatomic) IBOutlet BMKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UIButton *nowSpanBtn;
+@property (weak, nonatomic) IBOutlet UIButton *startBtn;
+@property (weak, nonatomic) IBOutlet UIButton *pauseBtn;
+@property (weak, nonatomic) IBOutlet UIButton *stopBtn;
+@property (weak, nonatomic) IBOutlet UIButton *redoBtn;
+@property (weak, nonatomic) IBOutlet UIButton *redisplayBtn;
+@property (weak, nonatomic) IBOutlet UIButton *uploadBtn;
 
 @property (strong, nonatomic) BMKLocationService *locationService;
 @property (nonatomic, strong) NSMutableArray *allLocations;
@@ -31,10 +37,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.nowSpanBtn.selected = YES;
-    // 圆角加阴影
-    self.nowSpanBtn.layer.shadowOffset = CGSizeMake(0,0);
-    self.nowSpanBtn.layer.shadowOpacity = 0.7;
-    self.nowSpanBtn.layer.cornerRadius = 5.f;
+    [self setupButtonStyle:self.nowSpanBtn];
+    [self setupButtonStyle:self.startBtn];
+    [self setupButtonStyle:self.pauseBtn];
+    [self setupButtonStyle:self.stopBtn];
+    [self setupButtonStyle:self.redoBtn];
+    [self setupButtonStyle:self.redisplayBtn];
+    [self setupButtonStyle:self.uploadBtn];
     
     self.allLocations = [NSMutableArray array];
     self.nowPathDrawType = SJPathDrawTypeNone;
@@ -59,6 +68,7 @@
     //    //以下_mapView为BMKMapView对象
     //    self.mapView.showsUserLocation = YES;//显示定位图层
     self.mapView.delegate = self;
+    self.mapView.logoPosition = BMKLogoPositionRightBottom;
     // 直接开启定位
     [_locationService startUserLocationService];
     [NSTimer scheduledTimerWithTimeInterval:0.3 repeats:YES block:^(NSTimer * _Nonnull timer) {
@@ -75,6 +85,14 @@
         }
     }];
 }
+
+- (void)setupButtonStyle:(UIButton *)btn {
+    // 圆角加阴影
+    btn.layer.shadowOffset = CGSizeMake(0,0);
+    btn.layer.shadowOpacity = 0.7;
+    btn.layer.cornerRadius = 5.f;
+}
+
 // 显示暂存信息
 - (void)displayTemporaryStorageData {
     // 得到第一个点,添加开始点标注

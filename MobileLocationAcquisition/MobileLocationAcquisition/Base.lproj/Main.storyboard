@@ -132,15 +132,21 @@
                             <constraint firstItem="xDf-0h-5dD" firstAttribute="top" secondItem="AbO-0c-Rr6" secondAttribute="bottom" constant="10" id="eKh-EB-Jp8"/>
                             <constraint firstAttribute="trailing" secondItem="xDf-0h-5dD" secondAttribute="trailing" constant="10" id="nxq-qR-OZr"/>
                             <constraint firstItem="6Kk-4g-8ET" firstAttribute="top" secondItem="oKF-YW-AhT" secondAttribute="bottom" constant="10" id="oTz-Nq-PAH"/>
+                            <constraint firstItem="SiM-ke-30S" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="5" id="oal-vA-mBf"/>
                             <constraint firstItem="Xas-0T-1My" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="10" id="p0Q-vU-ymd"/>
                             <constraint firstItem="s1c-gB-yOO" firstAttribute="top" secondItem="Xas-0T-1My" secondAttribute="bottom" constant="10" id="qJy-iY-Dd9"/>
                             <constraint firstItem="8LV-Xf-6uH" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="yDf-KW-uZ1"/>
-                            <constraint firstAttribute="trailing" secondItem="SiM-ke-30S" secondAttribute="trailing" constant="5" id="zDS-hT-2ew"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="mapView" destination="8LV-Xf-6uH" id="sy1-2F-mLo"/>
                         <outlet property="nowSpanBtn" destination="SiM-ke-30S" id="ACm-bB-V3Z"/>
+                        <outlet property="pauseBtn" destination="s1c-gB-yOO" id="VTW-MM-Js9"/>
+                        <outlet property="redisplayBtn" destination="AbO-0c-Rr6" id="bPP-eg-rQz"/>
+                        <outlet property="redoBtn" destination="6Kk-4g-8ET" id="N9h-ol-MJo"/>
+                        <outlet property="startBtn" destination="Xas-0T-1My" id="FJW-ci-a5a"/>
+                        <outlet property="stopBtn" destination="oKF-YW-AhT" id="JbN-w7-dDC"/>
+                        <outlet property="uploadBtn" destination="xDf-0h-5dD" id="l1b-BZ-EoZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
