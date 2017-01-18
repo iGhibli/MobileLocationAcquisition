@@ -30,9 +30,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.nowSpanBtn.layer.cornerRadius = 5.f;
-    self.nowSpanBtn.clipsToBounds = YES;
     self.nowSpanBtn.selected = YES;
+    // 圆角加阴影
+    self.nowSpanBtn.layer.shadowOffset = CGSizeMake(0,0);
+    self.nowSpanBtn.layer.shadowOpacity = 0.7;
+    self.nowSpanBtn.layer.cornerRadius = 5.f;
     
     self.allLocations = [NSMutableArray array];
     self.nowPathDrawType = SJPathDrawTypeNone;
